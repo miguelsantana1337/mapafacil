@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101a2d"><meta name="description" content="Master Mind — espaço visual para organizar ideias, decisões e execução.">
+  <title>Master Mind — Santana</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app" class="app-shell">
+ <aside class="sidebar" id="sidebar">
+  <div class="brand-lockup"><div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div><div><strong>MASTER MIND</strong><small>DO SANTANA</small></div></div>
+  <button class="new-map-primary" id="btnNewMap"><span>＋</span> Novo mapa</button>
+  <nav class="main-nav" aria-label="Mapas">
+   <button class="nav-item active" data-filter="recent"><span>◫</span> Início <b id="recentCount">0</b></button>
+   <button class="nav-item" data-filter="all"><span>⌁</span> Meus mapas</button><button class="nav-item" data-filter="favorite"><span>◇</span> Favoritos</button><button class="nav-item" data-filter="team"><span>◎</span> Mapas da equipe</button>
+  </nav>
+  <div class="sidebar-section"><div class="section-heading"><span>COLEÇÕES</span><button title="Nova coleção">＋</button></div><button class="collection-item"><i class="collection-dot coral"></i> Estratégia</button><button class="collection-item"><i class="collection-dot cyan"></i> Projetos</button><button class="collection-item"><i class="collection-dot gold"></i> Referências</button></div>
+  <div class="sidebar-bottom"><button class="nav-item" id="btnTemplates"><span>▦</span> Modelos</button><button class="nav-item" id="btnTrash"><span>⌫</span> Lixeira</button><div class="profile-chip"><div class="avatar">MS</div><div><strong>Miguel Santana</strong><small>Workspace pessoal</small></div><button aria-label="Opções">•••</button></div></div>
+ </aside>
+ <section class="workspace">
+  <header class="topbar">
+   <div class="map-identity"><button class="mobile-menu" id="btnMobileMenu">☰</button><button class="back-home" id="btnHome">←</button><div><span class="crumb">MEUS MAPAS /</span><input id="mapTitle" value="Mapa sem título" aria-label="Título do mapa"></div><button class="favorite-button" id="btnFavorite">◇</button></div>
+   <div class="top-actions"><div class="presence"><span class="presence-avatar cyan">MS</span><span class="presence-avatar pink">+</span></div><span class="save-status" id="saveStatus" role="status">Salvo</span><button class="quiet-button" id="btnPresent">Apresentar</button><button class="share-button" id="btnShare">Compartilhar <span>↗</span></button><button class="icon-button" id="btnHelp" title="Ajuda e atalhos" aria-label="Ajuda e atalhos">?</button><button class="icon-button" id="btnTheme" title="Alternar tema" aria-label="Alternar tema">◐</button></div>
+  </header>
+  <div class="view-toolbar" id="editorToolbar">
+   <div class="tool-group history-tools"><button id="btnUndo">↶</button><button id="btnRedo">↷</button></div><div class="tool-group add-tools"><button id="btnAddChild"><strong>＋</strong> Subtópico <kbd>Tab</kbd></button><button id="btnAddSibling">Tópico irmão <kbd>Enter</kbd></button><button id="btnConnect">⌁ Conectar</button></div><div class="tool-group"><button data-panel="notes">▤ Nota</button><button data-panel="link">↗ Link</button><button data-panel="task">✓ Tarefa</button><button data-panel="comments">◌ Comentário</button></div><div class="tool-spacer"></div><div class="view-switch"><button class="active" data-view="map">Mapa</button><button data-view="outline">Tópicos</button></div><button class="icon-button" id="btnExport">⇩</button><button class="icon-button danger" id="btnDelete">⌫</button>
+  </div>
+  <main class="stage">
+   <section id="homeView" class="home-view" hidden><div class="home-header"><div><span class="eyebrow">SE MAPAS</span><h1>Onde suas ideias ganham forma.</h1></div><p>Encontre um mapa ou comece um novo.</p></div><div class="home-controls"><h2 id="mapsHeading">Mapas recentes</h2><div class="home-actions"><label class="map-search"><span>⌕</span><input id="mapSearch" type="search" placeholder="Buscar mapas" aria-label="Buscar mapas"></label><button id="btnImportHome">Importar</button><button id="btnNewMapHome" class="share-button">＋ Criar mapa</button></div></div><div id="homeMaps" class="map-grid"></div></section>
+   <section id="mapView" class="canvas-wrap"><svg id="edgesLayer"></svg><div id="canvas"></div><div class="canvas-badge">MAPA VIVO <span></span></div><div id="connectionNotice" class="connection-notice" hidden><span>Selecione o tópico de destino</span><button id="btnCancelConnect">Cancelar <kbd>Esc</kbd></button></div><div class="zoom-control"><button id="btnZoomOut" aria-label="Diminuir zoom">−</button><span id="zoomLabel">100%</span><button id="btnZoomIn" aria-label="Aumentar zoom">＋</button><button id="btnZoomReset" aria-label="Ajustar mapa à tela">⌖</button></div><div id="minimap"><canvas id="minimapCanvas"></canvas><div id="minimapViewport"></div></div><div class="canvas-hint">Arraste para navegar · Duplo clique para editar · Tab cria um ramo</div></section>
+   <section id="outlineView" class="outline-view" hidden><div class="outline-heading"><span class="eyebrow">ESTRUTURA DO MAPA</span><h2 id="outlineTitle">Mapa</h2><p>Edite a lógica do mapa como uma pauta. A hierarquia permanece sincronizada com o canvas.</p></div><div id="outlineTree" class="outline-tree"></div></section>
+   <aside id="inspector" class="inspector"><div class="inspector-head"><div><span class="eyebrow">TÓPICO SELECIONADO</span><h3 id="inspectorTitle">Detalhes</h3></div><button id="btnCloseInspector" aria-label="Fechar painel">×</button></div><div class="inspector-tabs"><button class="active" data-inspector-tab="details">Detalhes</button><button data-inspector-tab="comments">Comentários <b id="commentCount">0</b></button></div><div id="detailsPanel" class="inspector-panel"><label>Título<textarea id="nodeText" rows="2"></textarea></label><label>Nota<textarea id="nodeNote" rows="5" placeholder="Contexto, decisões ou instruções..."></textarea></label><label>Link<input id="nodeLink" type="url" placeholder="https://"></label><div class="field-row"><label>Responsável<input id="taskAssignee" placeholder="Nome"></label><label>Prazo<input id="taskDue" type="date"></label></div><label class="check-field"><input id="taskDone" type="checkbox"><span>Marcar tópico como concluído</span></label><div class="color-field"><span>Cor do ramo</span><div id="colorSwatches"></div></div><p class="autosave-note">As alterações são salvas automaticamente.</p></div><div id="commentsPanel" class="inspector-panel" hidden><div id="commentsList" class="comments-list"></div><label>Novo comentário<textarea id="newComment" rows="3" placeholder="Registre uma decisão ou pergunta..."></textarea></label><button id="btnAddComment" class="share-button full">Comentar</button></div></aside>
+  </main>
+ </section>
+</div>
+<div id="dialog" class="dialog-backdrop" hidden><div class="dialog" role="dialog" aria-modal="true"><div class="dialog-head"><div><span class="eyebrow" id="dialogEyebrow">MASTER MIND</span><h2 id="dialogTitle">Título</h2></div><button id="btnCloseDialog">×</button></div><div id="dialogBody" class="dialog-body"></div></div></div><div id="toast" class="toast" role="status"></div><input type="file" id="fileInput" accept=".json,application/json" hidden>
+<script src="storage.js"></script><script src="app.js"></script>
+</body></html>
