@@ -2,6 +2,20 @@
 
 Workspace visual de estratégia e mapas mentais, 100% HTML/CSS/JS puro e sem etapa de build.
 
+Repositório oficial: [miguelsantana1337/mapafacil](https://github.com/miguelsantana1337/mapafacil).
+
+## Desenvolvimento com Codex e Claude
+
+As regras compartilhadas do projeto ficam em `AGENTS.md`. O `CLAUDE.md` importa essas mesmas instruções, evitando que os dois agentes adotem convenções diferentes.
+
+Fluxo recomendado:
+
+1. Use `main` como base estável.
+2. Crie uma branch por tarefa ou agente.
+3. Execute `npm run build` após alterar os arquivos-fonte.
+4. Execute `npm run check` antes de publicar a branch.
+5. Integre mudanças em `main` por pull request.
+
 ## Recursos implementados
 
 - Dashboard com mapas recentes, favoritos, coleções e modelos
@@ -19,11 +33,19 @@ Workspace visual de estratégia e mapas mentais, 100% HTML/CSS/JS puro e sem eta
 ## Rodar localmente
 
 ```bash
-cd "Master Mind do Santana"
-python3 -m http.server 8743
+npm run dev
 ```
 
 Abra `http://localhost:8743`.
+
+## Validar e preparar a publicação
+
+```bash
+npm run build
+npm run check
+```
+
+O build apenas sincroniza `index.html`, `styles.css`, `storage.js` e `app.js` com `dist/`. A validação confere a sintaxe JavaScript e garante que o artefato publicado não divergiu dos fontes.
 
 ## Arquitetura de dados (pronta para Supabase)
 

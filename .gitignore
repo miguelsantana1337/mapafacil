@@ -1,0 +1,29 @@
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Configuração local de agentes
+.codex/
+.claude/*
+!.claude/launch.json
+CLAUDE.local.md
+
+# Ambiente e segredos
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependências, caches e relatórios
+node_modules/
+.cache/
+coverage/
+*.log
+
+# Servidores locais
+.python-version
+__pycache__/
