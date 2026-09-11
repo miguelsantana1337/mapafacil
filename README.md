@@ -30,6 +30,17 @@ Fluxo recomendado:
 - Persistência automática no navegador
 - Interface responsiva para desktop e celular
 
+## Sincronização com Supabase
+
+O aplicativo usa armazenamento local por padrão e ativa a sincronização quando
+`SUPABASE_URL` e `SUPABASE_ANON_KEY` estão configuradas no build. O schema seguro
+está em `supabase/migrations/202609110001_create_mind_maps.sql` e aplica RLS para
+que cada usuário acesse somente os próprios mapas.
+
+Depois de aplicar a migração e configurar as duas variáveis na hospedagem, o
+usuário pode entrar por link mágico de e-mail e migrar seus mapas locais para a
+conta. Nunca use a chave `service_role` no frontend.
+
 ## Rodar localmente
 
 ```bash

@@ -15,7 +15,7 @@
    <button class="nav-item" data-filter="all"><span>⌁</span> Meus mapas</button><button class="nav-item" data-filter="favorite"><span>◇</span> Favoritos</button><button class="nav-item" data-filter="team"><span>◎</span> Mapas da equipe</button>
   </nav>
   <div class="sidebar-section"><div class="section-heading"><span>COLEÇÕES</span><button title="Nova coleção">＋</button></div><button class="collection-item"><i class="collection-dot coral"></i> Estratégia</button><button class="collection-item"><i class="collection-dot cyan"></i> Projetos</button><button class="collection-item"><i class="collection-dot gold"></i> Referências</button></div>
-  <div class="sidebar-bottom"><button class="nav-item" id="btnTemplates"><span>▦</span> Modelos</button><button class="nav-item" id="btnTrash"><span>⌫</span> Lixeira</button><div class="profile-chip"><div class="avatar">MS</div><div><strong>Miguel Santana</strong><small>Workspace pessoal</small></div><button aria-label="Opções">•••</button></div></div>
+  <div class="sidebar-bottom"><button class="nav-item" id="btnTemplates"><span>▦</span> Modelos</button><button class="nav-item" id="btnTrash"><span>⌫</span> Lixeira</button><button class="profile-chip" id="btnAccount"><div class="avatar">MS</div><div><strong id="accountName">Miguel Santana</strong><small id="syncStatus">Salvo neste dispositivo</small></div><span aria-hidden="true">›</span></button></div>
  </aside>
  <section class="workspace">
   <header class="topbar">
@@ -33,6 +33,13 @@
   </main>
  </section>
 </div>
+<nav class="mobile-dock" id="mobileDock" aria-label="Ações do mapa">
+ <button data-mobile-action="home"><span>⌂</span><small>Início</small></button>
+ <button data-mobile-action="outline"><span>☷</span><small>Tópicos</small></button>
+ <button class="mobile-add" data-mobile-action="add"><span>＋</span><small>Adicionar</small></button>
+ <button data-mobile-action="details"><span>▤</span><small>Detalhes</small></button>
+ <button data-mobile-action="more"><span>•••</span><small>Mais</small></button>
+</nav>
 <div id="dialog" class="dialog-backdrop" hidden><div class="dialog" role="dialog" aria-modal="true"><div class="dialog-head"><div><span class="eyebrow" id="dialogEyebrow">MASTER MIND</span><h2 id="dialogTitle">Título</h2></div><button id="btnCloseDialog">×</button></div><div id="dialogBody" class="dialog-body"></div></div></div><div id="toast" class="toast" role="status"></div><input type="file" id="fileInput" accept=".json,application/json" hidden>
-<script src="storage.js"></script><script src="app.js"></script>
+<script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="storage.js"></script><script src="app.js"></script>
 </body></html>
