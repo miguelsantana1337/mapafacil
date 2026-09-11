@@ -27,3 +27,5 @@ coverage/
 # Servidores locais
 .python-version
 __pycache__/
+.vercel/
+.vercel
