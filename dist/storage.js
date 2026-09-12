@@ -1,7 +1,7 @@
 /** Persistência local com sincronização Supabase opcional e segura. */
 (() => {
   'use strict';
-  const INDEX_KEY='mastermind.mapIndex', PREFIX='mastermind.map.', LAST='mastermind.lastOpenedId';
+  const INDEX_KEY='mastermind.mapIndex', PREFIX='mastermind.map.', LAST='mastermind.lastOpenedId', PREFERENCE_PREFIX='mastermind.';
   const readIndex=()=>{try{return JSON.parse(localStorage.getItem(INDEX_KEY))||[]}catch{return[]}};
   const writeIndex=ids=>localStorage.setItem(INDEX_KEY,JSON.stringify(ids));
   const local={
@@ -9,7 +9,8 @@
     async loadMap(id){try{const raw=localStorage.getItem(PREFIX+id);return raw?JSON.parse(raw):null}catch{return null}},
     async saveMap(map){map.updatedAt=new Date().toISOString();localStorage.setItem(PREFIX+map.id,JSON.stringify(map));const ids=readIndex();if(!ids.includes(map.id)){ids.push(map.id);writeIndex(ids)}return map},
     async deleteMap(id){localStorage.removeItem(PREFIX+id);writeIndex(readIndex().filter(x=>x!==id))},
-    getLastOpenedId(){return localStorage.getItem(LAST)},setLastOpenedId(id){localStorage.setItem(LAST,id)}
+    getLastOpenedId(){return localStorage.getItem(LAST)},setLastOpenedId(id){localStorage.setItem(LAST,id)},
+    getPreference(key,fallback=null){return localStorage.getItem(PREFERENCE_PREFIX+key)||fallback},setPreference(key,value){localStorage.setItem(PREFERENCE_PREFIX+key,value)}
   };
   const config=window.__MASTER_MIND_CONFIG__||{};
   const client=config.supabaseUrl&&config.supabaseAnonKey&&window.supabase?.createClient?window.supabase.createClient(config.supabaseUrl,config.supabaseAnonKey):null;
@@ -20,7 +21,7 @@
     async loadMap(id){if(!user)return local.loadMap(id);const {data,error}=await client.from('mind_maps').select('data').eq('id',id).maybeSingle();if(error)throw error;return data?.data||local.loadMap(id)},
     async saveMap(map){await local.saveMap(map);if(!user)return map;const {error}=await client.from('mind_maps').upsert({id:map.id,user_id:user.id,title:map.title,favorite:!!map.favorite,data:map,updated_at:map.updatedAt});if(error)throw error;return map},
     async deleteMap(id){await local.deleteMap(id);if(!user)return;const {error}=await client.from('mind_maps').delete().eq('id',id);if(error)throw error},
-    getLastOpenedId:local.getLastOpenedId,setLastOpenedId:local.setLastOpenedId
+    getLastOpenedId:local.getLastOpenedId,setLastOpenedId:local.setLastOpenedId,getPreference:local.getPreference,setPreference:local.setPreference
   };
   const auth={
     available:!!client,get user(){return user},
