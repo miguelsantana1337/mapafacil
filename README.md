@@ -1,4 +1,4 @@
-# Master Mind do Santana
+# Mapa Fácil
 
 Workspace visual de estratégia e mapas mentais, 100% HTML/CSS/JS puro e sem etapa de build.
 

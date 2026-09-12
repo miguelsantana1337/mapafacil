@@ -16,6 +16,8 @@ Este arquivo define as regras compartilhadas para qualquer agente que trabalhe n
 - Arquivos-fonte: `index.html`, `styles.css`, `storage.js` e `app.js`.
 - Artefato publicado: `dist/`, que deve ser uma cópia exata dos quatro arquivos-fonte.
 - Persistência atual: `localStorage`, isolada atrás de `window.MindStorage` em `storage.js`.
+- A experiência atual é pessoal e individual. Não exponha recursos de reunião, equipe ou colaboração sem nova decisão explícita do produto.
+- A marca oficial é Mapa Fácil. Use os arquivos fornecidos em `assets/`; não redesenhe nem aproxime o símbolo ou o wordmark.
 - Não acesse `localStorage` diretamente em `app.js`; mantenha a abstração de armazenamento.
 
 ## Comandos
