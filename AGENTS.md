@@ -12,19 +12,25 @@ Este arquivo define as regras compartilhadas para qualquer agente que trabalhe n
 
 ## Arquitetura atual
 
-- Aplicação estática em HTML, CSS e JavaScript puro, sem dependências de produção.
-- Arquivos-fonte: `index.html`, `styles.css`, `storage.js` e `app.js`.
-- Artefato publicado: `dist/`, que deve ser uma cópia exata dos quatro arquivos-fonte.
-- Persistência atual: `localStorage`, isolada atrás de `window.MindStorage` em `storage.js`.
-- Não acesse `localStorage` diretamente em `app.js`; mantenha a abstração de armazenamento.
+- SaaS em Next.js App Router, React, TypeScript e Tailwind CSS.
+- Canvas em `@xyflow/react`, estado em Zustand e validação com Zod.
+- Backend Supabase com Auth, PostgreSQL, RLS e Storage privado.
+- O produto é pessoal no MVP. A estrutura de workspace existe no banco, mas não exponha colaboração ou membros sem nova decisão explícita.
+- O modo Funnel desenha jornadas comerciais visualmente; não é CRM e não armazena leads ou oportunidades.
+- Nodes semânticos são sugestões editáveis. Preserve o bloco personalizado e a liberdade estrutural do canvas.
+- A aplicação estática anterior foi preservada em `legacy-static/` apenas como referência e recuperação.
+- A marca oficial é Mapa Fácil. Use os arquivos fornecidos em `public/assets/`; não redesenhe o símbolo ou o wordmark.
 
 ## Comandos
 
 - Servidor local: `npm run dev`
+- Lint: `npm run lint`
+- TypeScript: `npm run typecheck`
+- Testes: `npm run test`
+- Build: `npm run build`
 - Validação completa: `npm run check`
-- Sincronizar o artefato de publicação: `npm run build`
 
-Execute `npm run check` antes de concluir qualquer alteração. Se mudar um arquivo-fonte, execute `npm run build` antes do check e inclua a atualização correspondente em `dist/`.
+Execute `npm run check` antes de concluir qualquer alteração.
 
 ## Convenções de implementação
 
@@ -45,7 +51,17 @@ Execute `npm run check` antes de concluir qualquer alteração. Se mudar um arqu
 ## Code Review Rules
 
 - Bloqueie mudanças que exponham segredos ou dados pessoais.
-- Bloqueie divergência entre os arquivos-fonte e `dist/`.
-- Sinalize acesso direto ao `localStorage` fora de `storage.js`.
+- Bloqueie tabelas públicas sem grants, RLS e testes de autorização.
+- Sinalize acesso ao Supabase que dependa somente de verificações do frontend.
 - Sinalize funcionalidades sem estados de erro, vazio ou carregamento quando esses estados forem aplicáveis.
 - Exija validação responsiva para alterações de interface.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

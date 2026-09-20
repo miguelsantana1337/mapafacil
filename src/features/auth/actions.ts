@@ -1,0 +1,7 @@
+"use server";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+const value = (data: FormData, key: string) => String(data.get(key) ?? "").trim();
+export async function login(data: FormData) { const supabase = await createClient(); const { error } = await supabase.auth.signInWithPassword({ email: value(data, "email"), password: value(data, "password") }); if (error) redirect(`/login?erro=${encodeURIComponent("E-mail ou senha inválidos.")}`); redirect("/app"); }
+export async function signUp(data: FormData) { const supabase = await createClient(); const origin = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"; const { error } = await supabase.auth.signUp({ email: value(data, "email"), password: value(data, "password"), options: { data: { full_name: value(data, "name") }, emailRedirectTo: `${origin}/auth/callback` } }); if (error) redirect(`/cadastro?erro=${encodeURIComponent("Não foi possível criar sua conta.")}`); redirect("/login?mensagem=Confira seu e-mail para confirmar o cadastro."); }
+export async function resetPassword(data: FormData) { const supabase = await createClient(); const origin = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"; await supabase.auth.resetPasswordForEmail(value(data, "email"), { redirectTo: `${origin}/auth/callback?next=/app/settings` }); redirect("/login?mensagem=Se o e-mail estiver cadastrado, você receberá as instruções."); }

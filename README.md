@@ -1,98 +1,82 @@
-# Master Mind do Santana
+# Mapa Fácil
 
-Workspace visual de estratégia e mapas mentais, 100% HTML/CSS/JS puro e sem etapa de build.
+Visual Strategy Builder para transformar ideias, processos e jornadas comerciais em mapas visuais claros.
 
-Repositório oficial: [miguelsantana1337/mapafacil](https://github.com/miguelsantana1337/mapafacil).
+O modo **Funnel** é um construtor visual totalmente editável. Ele documenta a estrutura de aquisição, relacionamento, venda e pós-venda, mas não é um CRM e não gerencia leads ou oportunidades.
 
-## Desenvolvimento com Codex e Claude
+## Stack
 
-As regras compartilhadas do projeto ficam em `AGENTS.md`. O `CLAUDE.md` importa essas mesmas instruções, evitando que os dois agentes adotem convenções diferentes.
+- Next.js App Router, React e TypeScript
+- Tailwind CSS
+- React Flow (`@xyflow/react`)
+- Zustand e Zod
+- Supabase Auth, PostgreSQL, RLS e Storage
+- Vercel
 
-Fluxo recomendado:
-
-1. Use `main` como base estável.
-2. Crie uma branch por tarefa ou agente.
-3. Execute `npm run build` após alterar os arquivos-fonte.
-4. Execute `npm run check` antes de publicar a branch.
-5. Integre mudanças em `main` por pull request.
-
-## Recursos implementados
-
-- Dashboard com mapas recentes, favoritos, coleções e modelos
-- Editor visual com tópicos, subtópicos, tópicos irmãos e tópicos flutuantes
-- Arrastar, zoom, navegação no canvas, minimapa e recolhimento de ramos
-- Conexões hierárquicas e conexões transversais entre tópicos
-- Visão de mapa e visão em tópicos sincronizadas
-- Notas, links, responsável, prazo, conclusão e comentários por tópico
-- Histórico local com desfazer/refazer
-- Favoritos, tema claro/escuro, apresentação em tela cheia
-- Importação e exportação do mapa em JSON
-- Persistência automática no navegador
-- Interface responsiva para desktop e celular
-
-## Sincronização com Supabase
-
-O aplicativo usa armazenamento local por padrão e ativa a sincronização quando
-`SUPABASE_URL` e `SUPABASE_ANON_KEY` estão configuradas no build. O schema seguro
-está em `supabase/migrations/202609110001_create_mind_maps.sql` e aplica RLS para
-que cada usuário acesse somente os próprios mapas.
-
-Depois de aplicar a migração e configurar as duas variáveis na hospedagem, o
-usuário pode entrar por link mágico de e-mail e migrar seus mapas locais para a
-conta. Nunca use a chave `service_role` no frontend.
-
-## Rodar localmente
+## Desenvolvimento
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-Abra `http://localhost:8743`.
+A aplicação abre em `http://localhost:3000`. O canvas demonstrativo está disponível em `/app/projects/demo` mesmo sem Supabase configurado.
 
-## Validar e preparar a publicação
+## Variáveis
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+Não use chaves secretas com prefixo `NEXT_PUBLIC_`. Uma chave secreta server-side só deve ser adicionada quando houver uma operação administrativa concreta que a exija.
+
+## Banco
+
+As migrations ficam em `supabase/migrations/`. A migration SaaS cria:
+
+- profiles e workspace pessoal automático;
+- projects, project_nodes e project_edges;
+- templates, versões e assets;
+- grants mínimos, RLS e funções privadas de autorização;
+- bucket privado `project-assets` com policies por workspace.
+
+Aplicar somente no ambiente correto:
 
 ```bash
+npx supabase db push
+```
+
+Não use uma Preview Deployment contra o banco de produção.
+
+## Qualidade
+
+```bash
+npm run lint
+npm run typecheck
+npm run test
 npm run build
+```
+
+Ou execute tudo:
+
+```bash
 npm run check
 ```
 
-O build apenas sincroniza `index.html`, `styles.css`, `storage.js` e `app.js` com `dist/`. A validação confere a sintaxe JavaScript e garante que o artefato publicado não divergiu dos fontes.
+## Estrutura
 
-## Arquitetura de dados (pronta para Supabase)
+- `src/app/` — rotas públicas, autenticação e área privada
+- `src/components/editor/` — canvas, biblioteca e propriedades
+- `src/features/editor/` — registry, templates e validação
+- `src/features/projects/` — criação, carregamento e autosave
+- `src/lib/supabase/` — clientes browser/server e renovação de sessão
+- `src/stores/` — estado do editor e undo/redo
+- `supabase/` — migrations e seed
+- `legacy-static/` — versão anterior preservada para referência
 
-Toda a persistência passa por `storage.js`, que expõe `window.MindStorage` com:
+## Fluxo Git
 
-- `listMaps()` — lista `{id, title, updatedAt}` de todos os mapas
-- `loadMap(id)` — carrega um mapa completo `{id, title, nodes, rootId, updatedAt}`
-- `saveMap(map)` — cria/atualiza um mapa
-- `deleteMap(id)` — remove um mapa
-- `getLastOpenedId()` / `setLastOpenedId(id)` — último mapa aberto
-
-`app.js` só chama esses métodos — nunca acessa `localStorage` diretamente. A implementação atual (`localAdapter` em `storage.js`) guarda tudo no `localStorage` do navegador.
-
-### Para plugar o Supabase
-
-1. Crie uma tabela `maps`:
-   ```sql
-   create table maps (
-     id text primary key,
-     user_id uuid references auth.users default auth.uid(),
-     title text,
-     data jsonb,
-     updated_at timestamptz default now()
-   );
-   alter table maps enable row level security;
-   create policy "own maps" on maps for all using (auth.uid() = user_id);
-   ```
-2. Adicione o SDK `@supabase/supabase-js` (via `<script>` do CDN ou bundler).
-3. Escreva um segundo adapter no mesmo arquivo (ou em `storage.supabase.js`) com as mesmas 6 funções, mas lendo/gravando na tabela `maps` (guarde `nodes`/`rootId`/`title` dentro da coluna `data jsonb`).
-4. No final do arquivo, troque `window.MindStorage = localAdapter;` pelo novo adapter — nada em `app.js` precisa mudar.
-5. Adicione login (Supabase Auth) para popular `user_id` e ter mapas por usuário/multi-dispositivo.
-
-## Publicar online
-
-Como é estático (sem servidor/backend próprio), qualquer host estático serve: Vercel, Netlify, GitHub Pages, Cloudflare Pages. Basta apontar para a pasta raiz (contém `index.html`, `app.js`, `storage.js`, `styles.css`).
-
-## Correção recente
-
-O bug de "editar o balão" era o botão de colapsar (`− / +`) ficando dentro da área `contentEditable`, vazando seu símbolo para o texto salvo. Agora só o texto (`.node-text`) vira editável — o botão fica fora.
+`main` é produção. Mudanças entram por branch e pull request, com Preview Deployment e CI antes do merge.
