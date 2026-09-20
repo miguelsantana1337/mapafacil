@@ -20,6 +20,9 @@ CLAUDE.local.md
 
 # Dependências, caches e relatórios
 node_modules/
+.next/
+out/
+*.tsbuildinfo
 .cache/
 coverage/
 *.log
@@ -29,3 +32,4 @@ coverage/
 __pycache__/
 .vercel/
 .vercel
+.supabase/
