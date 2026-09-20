@@ -21,7 +21,8 @@ export async function updateSession(request: NextRequest) {
   });
 
   const { data } = await supabase.auth.getClaims();
-  const isPrivate = request.nextUrl.pathname.startsWith("/app");
+  const isPublicDemo = request.nextUrl.pathname === "/app/projects/demo";
+  const isPrivate = request.nextUrl.pathname.startsWith("/app") && !isPublicDemo;
   if (isPrivate && !data?.claims) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
