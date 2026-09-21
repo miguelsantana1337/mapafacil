@@ -33,9 +33,16 @@ export async function createProject(formData: FormData) {
   const template = getTemplate(String(formData.get("template") ?? "funnel-blank"));
   const { supabase, user, workspaceId } = await getAuthContext();
   const { data: project, error } = await supabase.from("projects").insert({ workspace_id: workspaceId, created_by: user.id, name, project_type: template.projectType }).select("id").single();
-  if (error || !project) throw new Error("Não foi possível criar o projeto.");
+  if (error || !project) redirect(`/app/new?erro=${encodeURIComponent("Não foi possível criar o projeto. Tente novamente.")}`);
   const graph = template.build(project.id, name);
-  await insertGraph(graph, user.id);
+  try {
+    await insertGraph(graph, user.id);
+  } catch (error) {
+    await supabase.from("projects").delete().eq("id", project.id);
+    console.error("Falha ao criar estrutura inicial do projeto", error);
+    redirect(`/app/new?erro=${encodeURIComponent("O projeto não pôde ser concluído. Tente novamente.")}`);
+  }
+  revalidatePath("/app");
   redirect(`/app/projects/${project.id}`);
 }
 
