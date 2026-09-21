@@ -8,6 +8,8 @@ import { ProjectDashboard, type ProjectSummary } from "@/components/dashboard/pr
 import { TemplateCardForm } from "@/components/dashboard/template-card-form";
 
 export const metadata = { title: "Seus projetos" };
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 async function getProjects(): Promise<ProjectSummary[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
