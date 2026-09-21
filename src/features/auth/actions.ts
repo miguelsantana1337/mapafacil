@@ -51,3 +51,9 @@ export async function resetPassword(data: FormData) {
   });
   redirect("/login?mensagem=Se o e-mail estiver cadastrado, você receberá as instruções.");
 }
+
+export async function signOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/login");
+}

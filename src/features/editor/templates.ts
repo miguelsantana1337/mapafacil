@@ -32,6 +32,7 @@ export type ProjectTemplate = {
   name: string;
   description: string;
   projectType: ProjectType;
+  nodeCount: number;
   build: (projectId: string, name: string) => ProjectGraph;
 };
 
@@ -47,7 +48,8 @@ const blank = (projectType: ProjectType) => (projectId: string, name: string) =>
 const consulting = (projectId: string, name: string) => {
   const types: CanvasNode["type"][] = ["traffic", "landing_page", "whatsapp", "crm", "meeting", "proposal", "sale"];
   const labels = ["Meta Ads", "Landing page", "WhatsApp", "Qualificação", "Reunião", "Proposta", "Venda"];
-  const nodes = types.map((type, index) => createCanvasNode(type, { x: 130 + index * 245, y: 280 }, labels[index]));
+  const positions = [{ x: 80, y: 120 }, { x: 360, y: 120 }, { x: 640, y: 120 }, { x: 920, y: 120 }, { x: 920, y: 390 }, { x: 640, y: 390 }, { x: 360, y: 390 }];
+  const nodes = types.map((type, index) => createCanvasNode(type, positions[index], labels[index]));
   return graph(projectId, name, "funnel", nodes, nodes.slice(1).map((node, index) => connect(nodes[index], node)));
 };
 
@@ -59,10 +61,10 @@ const metaWhatsapp = (projectId: string, name: string) => {
 };
 
 export const projectTemplates: ProjectTemplate[] = [
-  { id: "mindmap-blank", name: "Mapa em branco", description: "Comece somente com uma ideia central.", projectType: "mindmap", build: blank("mindmap") },
-  { id: "funnel-blank", name: "Funil em branco", description: "Canvas livre para desenhar qualquer jornada.", projectType: "funnel", build: blank("funnel") },
-  { id: "meta-whatsapp", name: "Meta Ads → WhatsApp", description: "Aquisição, conversa e venda.", projectType: "funnel", build: metaWhatsapp },
-  { id: "consulting", name: "Funil de consultoria", description: "Da campanha à proposta e venda.", projectType: "funnel", build: consulting },
+  { id: "mindmap-blank", name: "Mapa em branco", description: "Comece somente com uma ideia central.", projectType: "mindmap", nodeCount: 1, build: blank("mindmap") },
+  { id: "funnel-blank", name: "Funil em branco", description: "Canvas livre para desenhar qualquer jornada.", projectType: "funnel", nodeCount: 1, build: blank("funnel") },
+  { id: "meta-whatsapp", name: "Meta Ads → WhatsApp", description: "Aquisição, conversa e venda.", projectType: "funnel", nodeCount: 3, build: metaWhatsapp },
+  { id: "consulting", name: "Funil de consultoria", description: "Da campanha à proposta e venda.", projectType: "funnel", nodeCount: 7, build: consulting },
 ];
 
 export function getTemplate(id: string) {
